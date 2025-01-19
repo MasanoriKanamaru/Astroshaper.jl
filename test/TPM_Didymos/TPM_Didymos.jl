@@ -89,7 +89,7 @@
     n_face_shape1 = length(shape1.faces)  # Number of faces of Didymos
     n_face_shape2 = length(shape2.faces)  # Number of faces of Dimorphos
     
-    ##= Thermal properties =##
+    ##= Thermal properties of Didymos & Dimorphos [c.f. Michel+2016; Naidu+2020] =##
     k  = 0.125   # Thermal conductivity [W/m/K]
     ρ  = 2170.0  # Density [kg/m³]
     Cₚ = 600.0   # Heat capacity [J/kg/K]
@@ -106,29 +106,8 @@
     n_depth = 41  # Number of depth steps
     Δz = z_max / (n_depth - 1)  # Depth step width [m]
 
-    thermo_params1 = AsteroidThermoPhysicalModels.ThermoParams(  # [Michel+2016; Naidu+2020]
-        P₁,
-        fill(l₁,    n_face_shape1),
-        fill(Γ,     n_face_shape1),
-        fill(R_vis, n_face_shape1),
-        fill(R_ir,  n_face_shape1),
-        fill(ε,     n_face_shape1),
-        z_max,
-        Δz,
-        n_depth,
-    )
-
-    thermo_params2 = AsteroidThermoPhysicalModels.ThermoParams(  # [Michel+2016; Naidu+2020]
-        P₂,
-        fill(l₂,    n_face_shape2),
-        fill(Γ,     n_face_shape2),
-        fill(R_vis, n_face_shape2),
-        fill(R_ir,  n_face_shape2),
-        fill(ε,     n_face_shape2),
-        z_max,
-        Δz,
-        n_depth,
-    )
+    thermo_params1 = AsteroidThermoPhysicalModels.ThermoParams(P₁, l₁, Γ, R_vis, R_ir, ε, z_max, Δz, n_depth)
+    thermo_params2 = AsteroidThermoPhysicalModels.ThermoParams(P₂, l₂, Γ, R_vis, R_ir, ε, z_max, Δz, n_depth)
 
     ##= Setting of TPM =##
     stpm1 = AsteroidThermoPhysicalModels.SingleTPM(shape1, thermo_params1;

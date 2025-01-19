@@ -66,3 +66,46 @@ struct ThermoParams <: AbstractThermoParams
     Δz      ::Float64
     n_depth ::Int
 end
+
+
+"""
+    ThermoParams(
+        period          ::Float64,
+        skindepth       ::Float64,
+        inertia         ::Float64,
+        reflectance_vis ::Float64,
+        reflectance_ir  ::Float64,
+        emissivity      ::Float64,
+        z_max           ::Float64,
+        Δz              ::Float64,
+        n_depth         ::Int
+    )
+
+Outer constructor for `ThermoParams`.
+You can give the same parameters to all facets by `Float64`.
+
+# Arguments
+- `period`          : Period of thermal cycle (rotation period) [sec]
+- `skindepth`       : Thermal skin depth [m]
+- `inertia`         : Thermal inertia [tiu]
+- `reflectance_vis` : Reflectance in visible light [-]
+- `reflectance_ir`  : Reflectance in thermal infrared [-]
+- `emissivity`      : Emissivity [-]
+- `z_max`           : Depth of the lower boundary of a heat conduction equation [m]
+- `Δz`              : Depth step width [m]
+- `n_depth`         : Number of depth steps
+"""
+function ThermoParams(
+    period          ::Float64,
+    skindepth       ::Float64,
+    inertia         ::Float64,
+    reflectance_vis ::Float64,
+    reflectance_ir  ::Float64,
+    emissivity      ::Float64,
+    z_max           ::Float64,
+    Δz              ::Float64,
+    n_depth         ::Int
+)
+
+    return ThermoParams(period, [skindepth], [inertia], [reflectance_vis], [reflectance_ir], [emissivity], z_max, Δz, n_depth)
+end

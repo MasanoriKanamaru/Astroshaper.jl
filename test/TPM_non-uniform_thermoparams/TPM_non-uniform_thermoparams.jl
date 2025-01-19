@@ -95,23 +95,13 @@
 
     R_vis = [r[3] > 0 ? 0.04 : 0.1 for r in shape.face_centers]  # Reflectance in visible light [-]
     R_ir  = [r[3] > 0 ? 1.0 : 0.9  for r in shape.face_centers]  # Reflectance in thermal infrared [-]
-    ε     = 1.0   # Emissivity [-]
+    ε     = fill(1.0, n_face)   # Emissivity [-]
 
     z_max = 0.6   # Depth of the lower boundary of a heat conduction equation [m]
     n_depth = 41  # Number of depth steps
     Δz = z_max / (n_depth - 1)  # Depth step width [m]
 
-    thermo_params = AsteroidThermoPhysicalModels.ThermoParams(
-        P,
-        l,
-        Γ,
-        R_vis,
-        R_ir,
-        fill(ε, n_face),
-        z_max,
-        Δz,
-        n_depth
-    )
+    thermo_params = AsteroidThermoPhysicalModels.ThermoParams(P, l, Γ, R_vis, R_ir, ε, z_max, Δz, n_depth)
 
     ##= Setting of TPM =##
     stpm = AsteroidThermoPhysicalModels.SingleTPM(shape, thermo_params;

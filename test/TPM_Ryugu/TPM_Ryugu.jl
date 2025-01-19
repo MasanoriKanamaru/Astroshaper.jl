@@ -86,17 +86,7 @@
     n_depth = 41  # Number of depth steps
     Δz = z_max / (n_depth - 1)  # Depth step width [m]
 
-    thermo_params = AsteroidThermoPhysicalModels.ThermoParams(
-        P,
-        fill(l,     n_face),
-        fill(Γ,     n_face),
-        fill(R_vis, n_face),  
-        fill(R_ir,  n_face),
-        fill(ε,     n_face),  
-        z_max,
-        Δz,
-        n_depth
-    )
+    thermo_params = AsteroidThermoPhysicalModels.ThermoParams(P, l, Γ, R_vis, R_ir, ε, z_max, Δz, n_depth)
 
     ##= Setting of TPM =##
     stpm = AsteroidThermoPhysicalModels.SingleTPM(shape, thermo_params;

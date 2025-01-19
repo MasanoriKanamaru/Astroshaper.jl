@@ -107,6 +107,48 @@ abstract type ThermoPhysicalModel end
 
 
 """
+    broadcast_thermo_params!(thermo_params::ThermoParams, n_face::Int)
+
+Broadcast the thermophysical parameters to all faces if the values are uniform globally.
+
+# Arguments
+- `thermo_params` : Thermophysical parameters
+- `n_face`        : Number of faces of the shape model
+"""
+function broadcast_thermo_params!(thermo_params::ThermoParams, n_face::Int)
+    if length(thermo_params.inertia) == 1
+        resize!(thermo_params.skindepth,       n_face)
+        resize!(thermo_params.inertia,         n_face)
+        resize!(thermo_params.reflectance_vis, n_face)
+        resize!(thermo_params.reflectance_ir,  n_face)
+        resize!(thermo_params.emissivity,      n_face)
+
+        thermo_params.skindepth[2:end]       .= thermo_params.skindepth[begin]
+        thermo_params.inertia[2:end]         .= thermo_params.inertia[begin]
+        thermo_params.reflectance_vis[2:end] .= thermo_params.reflectance_vis[begin]
+        thermo_params.reflectance_ir[2:end]  .= thermo_params.reflectance_ir[begin]
+        thermo_params.emissivity[2:end]      .= thermo_params.emissivity[begin]
+    elseif length(thermo_params.inertia) == n_face
+        # Do nothing
+    else
+        throw(ArgumentError("The length of the thermophysical parameters is invalid."))
+    end
+end
+
+
+"""
+    broadcast_thermo_params!(thermo_params::ThermoParams, shape::ShapeModel)
+
+Broadcast the thermophysical parameters to all faces if the values are uniform globally.
+
+# Arguments
+- `thermo_params` : Thermophysical parameters
+- `shape`         : Shape model
+"""
+broadcast_thermo_params!(thermo_params::ThermoParams, shape::ShapeModel) = broadcast_thermo_params!(thermo_params, length(shape.faces))
+
+
+"""
     struct SingleTPM <: ThermoPhysicalModel
 
 # Fields
@@ -169,6 +211,8 @@ Construct a thermophysical model for a single asteroid (`SingleTPM`).
 """
 function SingleTPM(shape, thermo_params; SELF_SHADOWING, SELF_HEATING, SOLVER, BC_UPPER, BC_LOWER)
 
+    broadcast_thermo_params!(thermo_params, shape)
+
     n_depth = thermo_params.n_depth
     n_face = length(shape.faces)
 
@@ -179,7 +223,7 @@ function SingleTPM(shape, thermo_params; SELF_SHADOWING, SELF_HEATING, SOLVER, B
     force  = zero(MVector{3, Float64})
     torque = zero(MVector{3, Float64})
 
-    SingleTPM(shape, thermo_params, flux, temperature, face_forces, force, torque, SELF_SHADOWING, SELF_HEATING, SOLVER, BC_UPPER, BC_LOWER)
+    return SingleTPM(shape, thermo_params, flux, temperature, face_forces, force, torque, SELF_SHADOWING, SELF_HEATING, SOLVER, BC_UPPER, BC_LOWER)
 end
 
 
@@ -207,7 +251,7 @@ end
 Construct a thermophysical model for a binary asteroid (`BinaryTPM`).
 """
 function BinaryTPM(pri, sec; MUTUAL_SHADOWING, MUTUAL_HEATING)
-    BinaryTPM(pri, sec, MUTUAL_SHADOWING, MUTUAL_HEATING)
+    return BinaryTPM(pri, sec, MUTUAL_SHADOWING, MUTUAL_HEATING)
 end
 
 

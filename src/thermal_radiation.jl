@@ -27,7 +27,7 @@ at temperature `T`, integrated over all wavelength.
 # Return
 - `L` : Radiance [W/m²/steradian]
 """
-blackbody_radiance(T) = σ_SB * T^4  ## TODO: テストを追加する
+blackbody_radiance(T) = σ_SB * T^4
 
 
 """
